@@ -20,7 +20,6 @@ func (s *MyShortener) Shorten(url string) string {
 	defer s.Unlock()
 
 	s.storage[shorten(url)] = url
-
 	return shorten(url)
 }
 
