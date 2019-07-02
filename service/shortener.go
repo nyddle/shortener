@@ -2,7 +2,6 @@ package service
 
 import (
 	"bytes"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -16,11 +15,12 @@ type Shortener interface {
 
 type ShortenerService struct {
 	Shortener
+	address string
 }
 
 // NewShortenerService creates a new shortener service
-func NewShortenerService(shortener Shortener) *ShortenerService {
-	return &ShortenerService{shortener}
+func NewShortenerService(shortener Shortener, address string) *ShortenerService {
+	return &ShortenerService{shortener, address}
 }
 
 func (ss *ShortenerService) ResolverHandle(w http.ResponseWriter, r *http.Request) {
@@ -37,12 +37,7 @@ func (ss *ShortenerService) ResolverHandle(w http.ResponseWriter, r *http.Reques
 	case "POST":
 		buf := new(bytes.Buffer)
 		buf.ReadFrom(r.Body)
-		shortened := fmt.Sprintf("http://127.0.0.1:5555/") + ss.Shortener.Shorten(buf.String())
+		shortened := ss.address + "/" + ss.Shortener.Shorten(buf.String())
 		w.Write([]byte(shortened))
 	}
-}
-
-// ShortenHandle returns shortened url in response body
-func (ss *ShortenerService) ShortenHandle(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, world"))
 }

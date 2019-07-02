@@ -28,6 +28,8 @@ func NewHTTPServer(ss *service.ShortenerService, port int) *HttpServer {
 	hs := HttpServer{router: r, httpPort: port, s: ss}
 
 	r.HandleFunc("/{shortened}", ss.ResolverHandle)
+	r.HandleFunc("/", ss.ResolverHandle)
+
 	http.Handle("/", r)
 
 	return &hs
